@@ -47,7 +47,7 @@ class RedditReader:
         """Get and parse the json from some url"""
         req = Request(url)
         req.add_header("User-agent", "pyku_ebooks 0.1")
-        return json.loads(urlopen(req).read())
+        return json.loads(urlopen(req).read().decode("utf-8"))
 
 
     def children_bodies(self, listing_id):
