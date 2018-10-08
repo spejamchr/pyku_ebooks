@@ -13,7 +13,7 @@ class RedditReader:
 
     def __init__(self, subreddit):
         self.subreddit = subreddit
-        self.sub_json = None
+        self.__sub_json = None
 
 
     def base_url(self):
@@ -24,25 +24,18 @@ class RedditReader:
     def subreddit_url(self):
         return "{}.json".format(self.base_url())
 
+    def sub_json(self):
+        if not self.__sub_json:
+            self.__sub_json = self.get_json(self.subreddit_url())
 
-    def post_ids(self, *, comment_count=1):
-        """Get the ids of the currently hottest posts in the subreddit
+        return self.__sub_json
 
-        comment_count:
-            Only return ids for posts with at least this many comments.
-        """
-        if not self.sub_json:
-            self.sub_json = self.get_json(self.subreddit_url())
 
-        def condition(child):
-            """Only return posts that fit these criterion"""
-            stickied = child['data']['stickied']
-            comments = child['data']['num_comments']
-
-            return not stickied and comments >= comment_count
-
-        children = self.sub_json['data']['children']
-        return [c['data']['id'] for c in children if condition(c)]
+    def posts(self):
+        """Get the currently hottest posts in the subreddit"""
+        not_stickied = lambda c: not c['data']['stickied']
+        children = self.sub_json()['data']['children']
+        return [c['data'] for c in children if not_stickied(c)]
 
 
     def listing_url(self, listing_id):
@@ -73,10 +66,15 @@ class RedditReader:
     def get_many_comment_bodies(self):
         """Get the text of many comments of the top posts of the subreddit"""
         pool = multiprocessing.Pool()
-        body_groups = pool.map(self.children_bodies, self.post_ids())
+        post_ids = [p['id'] for p in self.posts()]
+        body_groups = pool.map(self.children_bodies, post_ids)
         return [body for group in body_groups for body in group]
+
+    def get_many_post_bodies(self):
+        """Get the text of the top posts of the subreddit"""
+        return [p['selftext'] for p in self.posts()]
 
 
 if __name__ == "__main__":
-    r = RedditReader("r/WritingPrompts")
-    print(r.get_many_comment_bodies())
+    r = RedditReader("r/ocPoetry")
+    print(r.get_many_post_bodies())

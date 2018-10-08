@@ -79,7 +79,10 @@ class MarkovChain:
             if not key in self[n]:
                 self[n][key] = []
 
-            self[n][key].append((word, self.syllable_counter.syllables(word)))
+            syllables = self.syllable_counter.syllables(word)
+            if syllables == 0: continue
+
+            self[n][key].append((word, syllables))
 
 
 if __name__ == "__main__":

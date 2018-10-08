@@ -59,18 +59,22 @@ class Writer:
         last: True/False. If true, the word will end in one of [.?!] if it has
             the maximum number of syllables
         """
-        words = self.__possible_next_words(maximum, before, first, last)
+        i = 0
+        while True:
+            i += 1
+            words = self.__possible_next_words(maximum, before, first, last)
 
-        if len(words) == 0:
-            msg = """No available words!
-            maximum={}
-            before={}
-            first={}
-            last={}
-            """.format(maximum, before, first, last)
-            raise IndexError(msg)
-
-        return words[random.randrange(len(words))]
+            # Require there to be multiple words to choose from. Otherwise we'd
+            # just copy the source text exactly.
+            if len(words) <= 1:
+                if len(before) == 0:
+                    msg = """No available words! maximum={} first={} last={}
+                    """.format(maximum, first, last)
+                    raise IndexError(msg)
+                else:
+                    before = before[1:]
+            else:
+                return words[random.randrange(len(words))]
 
 
     def __possible_next_words(self, maximum, before, first, last):

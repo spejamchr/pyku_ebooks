@@ -113,7 +113,7 @@ class SyllableCounter:
             return self.words[word]
 
         maybe = self.__guess(word)
-        print("Word not in dictionary: \"{}\". Guessed {} syllables".format(word, maybe))
+        # print("Word not in dictionary: \"{}\". Guessed {} syllables".format(word, maybe))
         self.words[word] = maybe
         return maybe
 
