@@ -1,6 +1,7 @@
 
 import os
 import json
+import random
 import twitter
 
 from pyku_ebooks import PykuEbooks
@@ -19,6 +20,9 @@ api = twitter.Api(consumer_key=keys['consumer_key'],
                   access_token_key=keys['access_token_key'],
                   access_token_secret=keys['access_token_secret'])
 
-haiku = PykuEbooks(4, "r/ocPoetry", "posts").haiku()
+if random.random() > 0.5:
+    haiku = PykuEbooks(4, "r/ocPoetry", "posts").haiku()
+else:
+    haiku = PykuEbooks(4, "r/WritingPrompts", "comments").haiku()
 
 api.PostUpdate(haiku)
