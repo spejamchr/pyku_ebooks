@@ -1,5 +1,6 @@
 
 import re
+import os
 
 class SyllableCounter:
     """Count syllables in English strings
@@ -44,8 +45,10 @@ class SyllableCounter:
         re.compile(r"[AEIOU]Y[AEIOU]") # annoying, layer
     ]
 
-    RAW_DICT = "data/cmudict-0.7b.txt"
-    PARSED_DICT = "data/cmudict-parsed.txt"
+    MY_DIR = os.path.dirname(__file__)
+
+    RAW_DICT = os.path.join(MY_DIR, "data", "cmudict-0.7b.txt")
+    PARSED_DICT  = os.path.join(MY_DIR, "data", "cmudict-parsed.txt")
 
 
     def __init__(self):
