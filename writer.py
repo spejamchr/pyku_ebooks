@@ -7,6 +7,7 @@ class Writer:
 
     LAST_QUERY = re.compile("[\\.\\?\\!]['\"]?$")
     FIRST_QUERY = re.compile(r"^[^a-z]*[A-Z]")
+    LINE_END_QUERY = re.compile("[\\.\\?\\!,;:-]['\"\”)]?$")
 
     def __init__(self, markov_chain):
         self.markov_chain = markov_chain
@@ -93,6 +94,8 @@ class Writer:
             if first and (not self.FIRST_QUERY.match(w)):
                 return False
             if last and s == maximum and (not self.LAST_QUERY.search(w)):
+                return False
+            if not last and s == maximum and (not self.LINE_END_QUERY.search(w)):
                 return False
             return True
 
